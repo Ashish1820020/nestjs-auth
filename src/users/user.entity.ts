@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Role } from 'src/auth/enums/role.enum'
 
 @Entity()
 export class User {
@@ -13,6 +14,9 @@ export class User {
 
   @Column({ nullable: true })
   hashedRefreshToken: string;
+
+  @Column({ type: "text", default: "USER" })
+  role: Role;
 
   @BeforeInsert()
   async hashPassword() {

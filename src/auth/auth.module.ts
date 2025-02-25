@@ -13,6 +13,9 @@ import jwtConfig from './config/jwt.config';
 import { ConfigModule } from '@nestjs/config';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import { RefreshJwtStrategy } from './strategies/refresh-jwt.stategies';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/jwt-guard/jwt-guard.guard';
+import { RoleGuard } from './guards/role-guard/role-guard.guard';
 
 @Module({
   imports: [
@@ -21,9 +24,23 @@ import { RefreshJwtStrategy } from './strategies/refresh-jwt.stategies';
     PassportModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    ConfigModule.forFeature(refreshJwtConfig)
+    ConfigModule.forFeature(refreshJwtConfig),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UsersService, LocalStrategy, JwtStrategy, RefreshJwtStrategy],
+  providers: [
+    AuthService,
+    UsersService,
+    LocalStrategy,
+    JwtStrategy,
+    RefreshJwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RoleGuard
+    }
+  ],
 })
 export class AuthModule {}

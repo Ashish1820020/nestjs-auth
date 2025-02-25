@@ -5,12 +5,14 @@ import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 import { User } from 'src/users/dtos/user.dto';
 import { LocalAuthGuard } from './guards/local-guard/local-guard.guard';
 import { RefreshJwtGuard } from './guards/refresh-jwt/refresh-jwt.guard';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 @UseInterceptors(new SerializeInterceptor(User))
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post("signin")
@@ -19,6 +21,8 @@ export class AuthController {
     return this.authService.signIn(req.user.id);
   }
 
+  
+  @Public()
   @Post("signup")
   signup (@Body() user: CreateUser) {
     console.log("Sign up Controller");
